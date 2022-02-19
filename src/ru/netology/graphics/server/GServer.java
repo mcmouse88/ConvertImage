@@ -27,7 +27,7 @@ public class GServer {
         this.converter = converter;
         this.converter.setMaxHeight(300);
         this.converter.setMaxWidth(300);
-        this.converter.setMaxRatio(4);
+        this.converter.setMaxRatio(3);
         this.converter.setTextColorSchema(new TextColorSchemaImpl());
 
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);

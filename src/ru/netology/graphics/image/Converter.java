@@ -22,6 +22,7 @@ public class Converter implements TextGraphicsConverter {
         BufferedImage img = ImageIO.read(new URL(url)); // Скачиваем картинку из интернета
         int newWidth = img.getWidth(); // получаем значение ширины, позже изменяем в соответствии с пропорциями
         int newHeight = img.getHeight(); // получаем значение высоты, позже изменяем в соответствии с пропорциями
+        checkMaxRatio(maxRatio, newWidth, newHeight);
         int[] newSize = resizeImage(newWidth, newHeight);
         Image scaledImage = img.getScaledInstance(newSize[0], newSize[1], BufferedImage.SCALE_SMOOTH); // Сузить картинку в соответствии с пропорциями
 
@@ -46,7 +47,6 @@ public class Converter implements TextGraphicsConverter {
         return totalResult;
     }
 
-
     @Override
     public void setMaxWidth(int width) {
         this.maxWidth = width;
@@ -57,13 +57,9 @@ public class Converter implements TextGraphicsConverter {
         this.maxHeight = height;
     }
 
-    public void setMaxRatio(double maxRatio) throws BadImageSizeException {
-        int maxSize = Math.max(maxWidth, maxHeight);
-        int minSize = Math.min(maxWidth, maxHeight);
-        this.maxRatio = (double) maxSize / minSize;
-        if (this.maxRatio > maxRatio) {
-            throw new BadImageSizeException(maxRatio, this.maxRatio);
-        }
+    @Override
+    public void setMaxRatio(double maxRatio) {
+        this.maxRatio = maxRatio;
     }
 
     @Override
@@ -90,6 +86,15 @@ public class Converter implements TextGraphicsConverter {
             width = (int) t;
         }
         return new int[] {width, height};
+    }
+
+    public void checkMaxRatio(double maxRatio, int width, int height) throws BadImageSizeException {
+        int maxSize = Math.max(width, height);
+        int minSize = Math.min(width, height);
+        double checkRatio = (double) maxSize / minSize;
+        if (checkRatio > maxRatio) {
+            throw new BadImageSizeException(checkRatio, maxRatio);
+        }
     }
 }
 
